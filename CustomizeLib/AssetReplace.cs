@@ -5,7 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace CustomizeLib.Testing;
+namespace CustomizeLib;
 
 public static class TextureStore
 {
@@ -39,18 +39,31 @@ public static class TextureStore
 
     private static void ReplaceAllTextures()
     {
-        foreach (Texture2D tex in from Texture2D texture2D in Resources.FindObjectsOfTypeAll<Texture2D>()
-                                  where !texture2D.name.StartsWith("replaced_")
-                                  select texture2D)
+        foreach (Texture2D tex in Resources.FindObjectsOfTypeAll<Texture2D>())
         {
-            if (texturePathDict.TryGetValue(tex.name, out string replacePath))
+            if (tex.name.StartsWith("replaced_") || !texturePathDict.TryGetValue(tex.name, out string replacePath)) continue;
+
+            if (TryReplaceTexture(tex, replacePath))
             {
-                if (TryReplaceTexture(tex, replacePath))
-                {
-                    tex.name = "replaced_" + tex.name;
-                    Debug.Log("Replaced texture: " + tex.name);
-                }
+                tex.name = "replaced_" + tex.name;
+                Debug.Log("Replaced texture: " + tex.name);
             }
+        }
+
+        foreach (Sprite sprite in Resources.FindObjectsOfTypeAll<Sprite>())
+        {
+            if (sprite.texture == null || !sprite.texture.name.StartsWith("replaced_")) continue;
+
+            // 放弃 Tight Mesh，强制使用 FullRect (全矩形) 以显示完整的新图片内容
+            sprite.OverrideGeometry(
+                new Vector2[] {
+                    new Vector2(0, 0),
+                    new Vector2(0, sprite.texture.height),
+                    new Vector2(sprite.texture.width, sprite.texture.height),
+                    new Vector2(sprite.texture.width, 0)
+                },
+                new ushort[] { 0, 1, 2, 2, 3, 0 }
+            );
         }
     }
 
@@ -60,16 +73,11 @@ public static class TextureStore
 
         try
         {
-            var replaceTex = new Texture2D(originalTex.width, originalTex.height, TextureFormat.RGBA32, false);
             var texData = File.ReadAllBytes(replacePath);
 
-            replaceTex.LoadImage(texData);
-            var pixels = replaceTex.GetPixels();
-            originalTex.SetPixels(pixels);
-            originalTex.Apply();
-            //originalTex = replaceTex;
+            originalTex.LoadImage(texData);
+            originalTex.wrapMode = TextureWrapMode.Clamp;
 
-            Object.Destroy(replaceTex);
             return true;
         }
         catch (System.Exception e)

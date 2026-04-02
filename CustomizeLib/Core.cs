@@ -34,7 +34,7 @@ public class CustomizeCore : BaseUnityPlugin
 
         Harmony.CreateAndPatchAll(Assembly.GetExecutingAssembly());
         CodeTextManager.InitTextAndFont("CodeToShow.cs");
-        Testing.TextureStore.Init();
+        TextureStore.Init();
     }
 
     [HarmonyPatch]
