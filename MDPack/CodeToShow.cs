@@ -24,8 +24,8 @@ public class CustomizeCore : BaseUnityPlugin
 
     public void Awake()
     {
-        ab_railgun = Helper.GetAssetBundle(Assembly.GetExecutingAssembly(), "sickashellrailgun");
-        ab_blackhole = Helper.GetAssetBundle(Assembly.GetExecutingAssembly(), "nullblackhole");
+        ab_railgun = CustomUtils.GetAssetBundle(Assembly.GetExecutingAssembly(), "sickashellrailgun");
+        ab_blackhole = CustomUtils.GetAssetBundle(Assembly.GetExecutingAssembly(), "nullblackhole");
 
         RechargingSound = ab_railgun.LoadAsset<AudioClip>("RECHARGING");
         BlackHoleSound = ab_blackhole.LoadAsset<AudioClip>("heh, nothing personal kid");
@@ -52,7 +52,7 @@ public class CustomizeCore : BaseUnityPlugin
         {
             if (__instance.HasControl && !__instance.isAI)
             {
-                Helper.controller = __instance;
+                CustomUtils.controller = __instance;
             }
         }
 
@@ -90,7 +90,7 @@ public class CustomizeCore : BaseUnityPlugin
                     codes.Insert(i + 1, new CodeInstruction(OpCodes.Dup));
                     codes.Insert(i + 2, new CodeInstruction(OpCodes.Ldarg_0));
                     codes.Insert(i + 3, new CodeInstruction(OpCodes.Ldarg_1));
-                    codes.Insert(i + 4, new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(CustomizeCore), nameof(OnBeamThrow))));
+                    codes.Insert(i + 4, new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(CustomCore), nameof(OnBeamThrow))));
                     continue;
                 }
             }

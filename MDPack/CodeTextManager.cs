@@ -6,8 +6,9 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
+using CustomizeLib;
 
-namespace CustomizeLib;
+namespace MDPack;
 
 public class CodeTextManager
 {
@@ -109,7 +110,7 @@ public class CodeTextManager
             var canvasObj = target.GetComponentInChildren<Canvas>()?.gameObject;
             if (canvasObj == null)
             {
-                canvasObj = Instantiate(Helper.controller.transform.Find("GameCanvas").gameObject, target);
+                canvasObj = Instantiate(CustomUtils.controller.transform.Find("GameCanvas").gameObject, target);
                 Destroy(canvasObj.GetComponent<OrigoMeBro>());
                 for (var i = 0; i < canvasObj.transform.childCount; i++)
                 {
