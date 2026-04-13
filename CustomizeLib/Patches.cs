@@ -17,7 +17,7 @@ public class Patches
     [HarmonyPostfix]
     public static void ControllerStartPostfix(Controller __instance)
     {
-        if (__instance.HasControl && !__instance.isAI)
+        if (__instance.HasControl && !__instance.IsAI())
         {
             CustomUtils.controller = __instance;
         }
