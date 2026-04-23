@@ -2,8 +2,10 @@
 using System.IO;
 using System.Reflection;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using HarmonyLib;
+using UnityEngine.UI;
 using Object = UnityEngine.Object;
 
 namespace CustomizeLib;
@@ -89,6 +91,55 @@ public static class CustomUtils
         {
             logger.LogError(e.Source);
             throw new ArgumentException($"Failed to load {name} \n{e}");
+        }
+    }
+
+    /// <summary>
+    /// 内部专用的内存清理组件，带智能防重复克隆缓存
+    /// </summary>
+    internal class MaterialCleanup : MonoBehaviour
+    {
+        // 核心优化：记录组件(Renderer/Graphic)到其专属克隆材质的映射
+        private readonly Dictionary<Component, Material> _clonedMaterials = new();
+
+        public Material GetOrCloneMaterial(Renderer renderer)
+        {
+            // 1. 如果字典里已经有这个组件的克隆体，直接返回，绝对不重复克隆！
+            if (_clonedMaterials.TryGetValue(renderer, out var mat) && mat != null)
+                return mat;
+
+            // 2. 首次调用：利用 Unity 底层机制克隆（renderer.material 会自动克隆并赋值）
+            mat = renderer.material;
+
+            // 3. 缓存起来
+            _clonedMaterials[renderer] = mat;
+            return mat;
+        }
+
+        public Material GetOrCloneMaterial(Graphic graphic)
+        {
+            if (_clonedMaterials.TryGetValue(graphic, out var mat) && mat != null)
+                return mat;
+
+            // 首次调用：UI 不会自动克隆，我们必须手动 new
+            mat = new Material(graphic.material);
+            graphic.material = mat; // 别忘了把新材质赋回给 UI
+
+            _clonedMaterials[graphic] = mat;
+            return mat;
+        }
+
+        void OnDestroy()
+        {
+            // 遍历所有缓存的材质并安全销毁
+            foreach (var mat in _clonedMaterials.Values)
+            {
+                if (mat != null)
+                {
+                    Destroy(mat);
+                }
+            }
+            _clonedMaterials.Clear();
         }
     }
 

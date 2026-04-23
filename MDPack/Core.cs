@@ -18,7 +18,7 @@ public class Core : BaseUnityPlugin
 {
     public const string PLUGIN_GUID = "z7572.MDPack";
     public const string PLUGIN_NAME = "MDPack";
-    public const string PLUGIN_VERSION = "1.3.0";
+    public const string PLUGIN_VERSION = "2.0.0";
 
     internal static AssetBundle ab_railgun;
     internal static AssetBundle ab_blackhole;
@@ -86,7 +86,7 @@ public class Core : BaseUnityPlugin
         [HarmonyPatch(typeof(ShrinkOverTime), "Start")]
         public static void ShrinkOverTimeStartPrefix(ShrinkOverTime __instance)
         {
-            if (__instance.gameObject.GetComponent<BlackHoleFade>() != null)
+            if (__instance.gameObject.GetComponent<DoGlitchWhenShrink>() != null)
             {
                 __instance.enabled = false;
                 __instance.gameObject.AddComponent<BlackHoleFadeAnim>();
@@ -136,6 +136,12 @@ public class Core : BaseUnityPlugin
         }
     }
 
+    // Render Queue:
+    // 3000: Default
+    // 3001: Bullet Lens
+    // 3002: Bullet Particles, Bullet OuterRing
+    // 3003: BlackHole Lens, Suck Particle
+    // 3004: BlackHole Particles, Hole, OuterRing, NULL, CodeText
     private static void ReplaceLogic()
     {
         //var allAudioSources = Resources.FindObjectsOfTypeAll<AudioSource>().ToList();
@@ -174,32 +180,61 @@ public class Core : BaseUnityPlugin
             }
             if (oriPrefab.name == "41 Black Hole")
             {
-                var newPrefab = ab_blackhole.LoadAsset<GameObject>("BulletBlackHole").transform;
                 var weapon = oriPrefab.GetComponent<Weapon>();
-                var newObj1 = Instantiate(newPrefab.Find("OuterRing"), weapon.projectile.transform);
+                var oriProjectile = weapon.projectile;
+                var abProjectile = ab_blackhole.LoadAsset<GameObject>("BulletBlackHole");
 
+                var ringObj = Instantiate(abProjectile.transform.Find("OuterRing"), oriProjectile.transform);
+                var lensObj = Instantiate(abProjectile.transform.Find("Lens"), oriProjectile.transform);
 
+                lensObj.GetComponent<MeshRenderer>().ModifyMaterialSafely(mat => mat.renderQueue = 3001);
+                ringObj.GetComponent<ParticleSystemRenderer>().ModifyMaterialSafely(mat => mat.renderQueue = 3002);
+                foreach (var part in oriProjectile.GetComponentsInChildren<ParticleSystemRenderer>())
+                {
+                    if (part == ringObj.GetComponent<ParticleSystemRenderer>()) continue;
+                    part.ModifyMaterialSafely(mat => mat.renderQueue = 3002);
+                }
+
+                lensObj.gameObject.AddComponent<BulletLensController>();
             }
             if (oriPrefab.name == "BlackHole")
             {
                 oriPrefab.GetComponent<AudioSource>().clip = BlackHoleBgm;
-                var abPrefab = ab_blackhole.LoadAsset<GameObject>("BlackHole").transform.Find("Hole");
-                var child = oriPrefab.transform.Find("Hole");
-                child.Find("Particle System (1)").gameObject.SetActive(false);
-                var newObj1 = Instantiate(abPrefab.Find("OuterRing"), child);
-                var newObj2 = Instantiate(abPrefab.Find("NULL"), child);
-                var anim1 = newObj1.gameObject.AddComponent<BlackHoleAnim>();
-                var anim2 = newObj2.gameObject.AddComponent<BlackHoleAnim>();
-                anim1.target = child;
-                anim2.target = child;
-                newObj1.gameObject.AddComponent<RemoveOnLevelChange>();
-                newObj2.gameObject.AddComponent<RemoveOnLevelChange>();
-                newObj1.gameObject.AddComponent<BlackHoleFade>();
-                newObj2.gameObject.AddComponent<BlackHoleFade>();
+                var abPrefab = ab_blackhole.LoadAsset<GameObject>("BlackHole");
 
-                // Original prefab will not destroyed, so we need to check if already has the component
-                if (oriPrefab.GetComponent<BlackHoleFade>() == null)
-                    oriPrefab.gameObject.AddComponent<BlackHoleFade>();
+                var oriHole = oriPrefab.transform.Find("Hole");
+                var abHole = abPrefab.transform.Find("Hole");
+
+                var partSuck = oriPrefab.transform.Find("Particle System (1)").GetComponent<ParticleSystemRenderer>();
+                if (partSuck != null) partSuck.ModifyMaterialSafely(mat => mat.renderQueue = 3003);
+
+                var holeRenderer = oriHole.GetComponent<SpriteRenderer>();
+                holeRenderer.ModifyMaterialSafely(mat => mat.renderQueue = 3004);
+
+                oriHole.Find("Particle System (1)").gameObject.SetActive(false); // Balls that blocks the outer ring
+                var part = oriHole.transform.Find("Particle System").GetComponent<ParticleSystemRenderer>();
+                if (part != null && part.enabled) part.ModifyMaterialSafely(mat => mat.renderQueue = 3004);
+
+                var abLens = abPrefab.transform.Find("Lens");
+                if (abLens != null)
+                {
+                    var lensObj = Instantiate(abLens.gameObject, oriPrefab.transform);
+                    lensObj.transform.localScale = Vector3.one;
+                    lensObj.GetComponent<MeshRenderer>().ModifyMaterialSafely(mat => mat.renderQueue = 3003);
+
+                    var lens = lensObj.AddComponent<BlackHoleLensController>();
+                    lens.holeSprite = holeRenderer;
+                }
+
+                var newObj1 = Instantiate(abHole.Find("OuterRing"), oriHole);
+                var newObj2 = Instantiate(abHole.Find("NULL"), oriHole);
+
+                newObj1.GetComponent<ParticleSystemRenderer>().ModifyMaterialSafely(mat => mat.renderQueue = 3004);
+                newObj2.GetComponent<ParticleSystemRenderer>().ModifyMaterialSafely(mat => mat.renderQueue = 3004);
+
+                // Original prefab will not be destroyed, so we need to check if already has the component
+                if (oriPrefab.GetComponent<DoGlitchWhenShrink>() == null)
+                    oriPrefab.gameObject.AddComponent<DoGlitchWhenShrink>();
                 if (oriPrefab.GetComponent<CodeTextManager.SpawnCodes>() == null)
                     oriPrefab.gameObject.AddComponent<CodeTextManager.SpawnCodes>();
 

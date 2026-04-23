@@ -4,6 +4,8 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using UnityEngine;
+using UnityEngine.UI;
+using static CustomizeLib.CustomUtils;
 
 namespace CustomizeLib;
 
@@ -11,7 +13,7 @@ public static class Extensions
 {
     public static void CopyTo(this Stream source, Stream destination, int bufferSize = 81920)
     {
-        byte[] array = new byte[bufferSize];
+        var array = new byte[bufferSize];
         int count;
         while ((count = source.Read(array, 0, array.Length)) != 0)
         {
@@ -29,6 +31,42 @@ public static class Extensions
     private static readonly MaterialPropertyBlock _propBlock = new();
     private static readonly int ColorId = Shader.PropertyToID("_Color");
     private static readonly int EmissionColorId = Shader.PropertyToID("_EmissionColor");
+
+    /// <summary>
+    /// 万能材质修改器 (针对 3D/2D 渲染器)
+    /// </summary>
+    public static void ModifyMaterialSafely(this Renderer renderer, Action<Material> modifyAction)
+    {
+        if (renderer == null || modifyAction == null) return;
+
+        // 获取或添加智能清理组件
+        var cleanup = GetOrCreateCleanup(renderer.gameObject);
+
+        // 从清理组件获取唯一克隆体并执行修改
+        modifyAction.Invoke(cleanup.GetOrCloneMaterial(renderer));
+    }
+
+    /// <summary>
+    /// 万能材质修改器 (针对 UGUI 元素)
+    /// </summary>
+    public static void ModifyMaterialSafely(this Graphic graphic, Action<Material> modifyAction)
+    {
+        if (graphic == null || modifyAction == null) return;
+
+        var cleanup = GetOrCreateCleanup(graphic.gameObject);
+        modifyAction.Invoke(cleanup.GetOrCloneMaterial(graphic));
+    }
+
+    // 提取公共获取 Cleanup 组件的逻辑
+    private static MaterialCleanup GetOrCreateCleanup(GameObject go)
+    {
+        var cleanup = go.GetComponent<MaterialCleanup>();
+        if (cleanup == null)
+        {
+            cleanup = go.AddComponent<MaterialCleanup>();
+        }
+        return cleanup;
+    }
 
     /// <summary>
     /// 仅设置基础颜色 (_Color)

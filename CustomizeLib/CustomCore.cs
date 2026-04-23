@@ -18,7 +18,7 @@ public class CustomCore : BaseUnityPlugin
 {
     public const string PLUGIN_GUID = "z7572.CustomizeLib";
     public const string PLUGIN_NAME = "CustomizeLib";
-    public const string PLUGIN_VERSION = "2.0.0";
+    public const string PLUGIN_VERSION = "2.1.0";
 
     public void Awake()
     {

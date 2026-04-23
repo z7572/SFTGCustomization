@@ -130,6 +130,7 @@ public class CodeTextManager
             textObj.AddComponent<CodeFlashAnim>();
             var text = textObj.AddComponent<Text>();
             SetupTextProperties(text, SizeMultiplier);
+            text.ModifyMaterialSafely(mat => mat.renderQueue = 3004);
 
             return text;
         }
