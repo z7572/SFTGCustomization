@@ -1,11 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.14.36915.13 d17.14
+VisualStudioVersion = 17.14.36915.13
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CustomizeLib", "CustomizeLib\CustomizeLib.csproj", "{91C083FA-2A27-51B3-A9DE-BE1097D7EFC2}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MDPack", "MDPack\MDPack.csproj", "{8B844C93-0199-7B5D-F638-4D3B751BE86F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AICPack", "AICPack\AICPack.csproj", "{12E8F9E5-FFF5-4A3C-8C8E-45367976D61B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{8B844C93-0199-7B5D-F638-4D3B751BE86F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8B844C93-0199-7B5D-F638-4D3B751BE86F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8B844C93-0199-7B5D-F638-4D3B751BE86F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{12E8F9E5-FFF5-4A3C-8C8E-45367976D61B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{12E8F9E5-FFF5-4A3C-8C8E-45367976D61B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{12E8F9E5-FFF5-4A3C-8C8E-45367976D61B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{12E8F9E5-FFF5-4A3C-8C8E-45367976D61B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
