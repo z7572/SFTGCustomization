@@ -91,6 +91,8 @@ public static class TextureStore
         int newDumpCount = 0;
         int replaceCount = 0;
 
+        bool enableAutoDump = ConfigHandler.GetEntry<bool>("EnableAutoDumpTexture");
+
         foreach (Texture2D tex in Resources.FindObjectsOfTypeAll<Texture2D>())
         {
             if (!IsValidTextureToDump(tex)) continue;
@@ -101,8 +103,11 @@ public static class TextureStore
 
             if (!File.Exists(filePath))
             {
-                DumpTexture(tex, filePath);
-                newDumpCount++;
+                if (enableAutoDump)
+                {
+                    DumpTexture(tex, filePath);
+                    newDumpCount++;
+                }
             }
             else
             {

@@ -18,6 +18,9 @@ public static class ConfigHandler
         var enableTextureReplace = config.Bind(CustomSect, "EnableTextureReplace", true, "启用纹理替换");
         EntriesDict[enableTextureReplace.Definition.Key] = enableTextureReplace;
 
+        var enableAutoDumpTexture = config.Bind(CustomSect, "EnableAutoDumpTexture", false, "是否自动导出纹理");
+        EntriesDict[enableAutoDumpTexture.Definition.Key] = enableAutoDumpTexture;
+
         var enableObsoleteSnakeGrenadeSmoke = config.Bind(CustomSect, "EnableObsoleteSnakeBombSmoke", false, "启用隐藏的蛇榴弹爆炸烟雾");
         EntriesDict[enableObsoleteSnakeGrenadeSmoke.Definition.Key] = enableObsoleteSnakeGrenadeSmoke;
 
