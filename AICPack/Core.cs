@@ -18,7 +18,7 @@ public class Core : BaseUnityPlugin
 {
     public const string PLUGIN_GUID = "z7572.AICPack";
     public const string PLUGIN_NAME = "AICPack";
-    public const string PLUGIN_VERSION = "1.0.0";
+    public const string PLUGIN_VERSION = "1.1.0";
 
     internal static AssetBundle ab_uni;
 
