@@ -23,13 +23,13 @@ public class Patches
         }
     }
 
-    // Enable obsolete snake bomb particle
+    // Enable obsolete snake grenade particle
     [HarmonyTranspiler]
     [HarmonyPatch(typeof(SnakeSpawner), "Start")]
     public static IEnumerable<CodeInstruction> EnableSnakeBombParticleTranspiler(IEnumerable<CodeInstruction> instructions)
     {
         var codes = instructions.ToList();
-        if (!ConfigHandler.GetEntry<bool>("EnableObsoleteSnakeBombSmoke")) return codes;
+        if (!ConfigHandler.GetEntry<bool>("EnableObsoleteSnakeGrenadeParticle")) return codes;
 
         for (int i = 0; i < codes.Count; i++)
         {

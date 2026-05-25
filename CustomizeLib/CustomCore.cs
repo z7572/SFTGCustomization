@@ -1,6 +1,5 @@
 ﻿using BepInEx;
 using HarmonyLib;
-using LevelEditor;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -9,6 +8,7 @@ using System.Reflection;
 using System.Reflection.Emit;
 using BepInEx.Bootstrap;
 using UnityEngine;
+using BepInEx.Logging;
 
 namespace CustomizeLib;
 
@@ -18,23 +18,27 @@ public class CustomCore : BaseUnityPlugin
 {
     public const string PLUGIN_GUID = "z7572.CustomizeLib";
     public const string PLUGIN_NAME = "CustomizeLib";
-    public const string PLUGIN_VERSION = "2.2.0";
+    public const string PLUGIN_VERSION = "2.3.0";
+
+    internal new static ManualLogSource Logger;
 
     public void Awake()
     {
-        Logger.LogInfo("CustomizeLib is loaded!");
+        Logger = base.Logger;
+
+        LogInfo("CustomizeLib is loaded!");
 
         var qolVersion = GetTargetPluginVersion(QOL_GUID);
         if (qolVersion != null && qolVersion >= new Version(1, 22, 2)) IsQOLExLoaded = true;
 
         try
         {
-            Logger.LogInfo("Loading configuration options from config file...");
+            LogInfo("Loading configuration options from config file...");
             ConfigHandler.InitConfig(Config);
         }
         catch (Exception e)
         {
-            Logger.LogError("Exception on loading configuration: " + e.StackTrace + e.Message + e.Source + e.InnerException);
+            LogError("Exception on loading configuration: " + e.StackTrace + e.Message + e.Source + e.InnerException);
         }
         try
         {
@@ -43,7 +47,7 @@ public class CustomCore : BaseUnityPlugin
         }
         catch (Exception e)
         {
-            Logger.LogError(e);
+            LogError(e);
         }
     }
 
@@ -56,5 +60,5 @@ public class CustomCore : BaseUnityPlugin
     }
 
     public static bool IsQOLExLoaded { get; private set; }
-    public const string QOL_GUID = "monky.plugins.QOL";
+    private const string QOL_GUID = "monky.plugins.QOL";
 }
