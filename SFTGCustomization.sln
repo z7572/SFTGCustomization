@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MDPack", "MDPack\MDPack.csp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AICPack", "AICPack\AICPack.csproj", "{12E8F9E5-FFF5-4A3C-8C8E-45367976D61B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CustomMisc", "CustomMisc\CustomMisc.csproj", "{F3E99526-5FFB-4DD9-8BFE-38618840B2C8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{12E8F9E5-FFF5-4A3C-8C8E-45367976D61B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{12E8F9E5-FFF5-4A3C-8C8E-45367976D61B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{12E8F9E5-FFF5-4A3C-8C8E-45367976D61B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F3E99526-5FFB-4DD9-8BFE-38618840B2C8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F3E99526-5FFB-4DD9-8BFE-38618840B2C8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F3E99526-5FFB-4DD9-8BFE-38618840B2C8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F3E99526-5FFB-4DD9-8BFE-38618840B2C8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

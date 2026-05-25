@@ -13,7 +13,7 @@ using static MDPack.BlackHoleFix;
 namespace MDPack;
 
 [BepInPlugin(PLUGIN_GUID, PLUGIN_NAME, PLUGIN_VERSION)]
-[BepInDependency(CustomCore.PLUGIN_GUID, CustomCore.PLUGIN_VERSION)]
+[BepInDependency(CustomCore.PLUGIN_GUID, "2.2.0")]
 public class Core : BaseUnityPlugin
 {
     public const string PLUGIN_GUID = "z7572.MDPack";
