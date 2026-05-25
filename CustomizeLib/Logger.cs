@@ -13,6 +13,11 @@ public static class Logger
         CustomCore.Logger.LogInfo(string.Join(" ", obj.Select(o => o?.ToString() ?? "null").ToArray()));
     }
 
+    public static void LogMessage(params object[] obj)
+    {
+        CustomCore.Logger.LogMessage(string.Join(" ", obj.Select(o => o?.ToString() ?? "null").ToArray()));
+    }
+
     public static void LogWarning(params object[] obj)
     {
         CustomCore.Logger.LogWarning(string.Join(" ", obj.Select(o => o?.ToString() ?? "null").ToArray()));

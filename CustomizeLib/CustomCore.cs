@@ -18,15 +18,15 @@ public class CustomCore : BaseUnityPlugin
 {
     public const string PLUGIN_GUID = "z7572.CustomizeLib";
     public const string PLUGIN_NAME = "CustomizeLib";
-    public const string PLUGIN_VERSION = "2.3.0";
+    public const string PLUGIN_VERSION = "3.0.0";
 
     internal new static ManualLogSource Logger;
 
-    public void Awake()
+    private void Awake()
     {
         Logger = base.Logger;
 
-        LogInfo("CustomizeLib is loaded!");
+        LogMessage("CustomizeLib is loaded!");
 
         var qolVersion = GetTargetPluginVersion(QOL_GUID);
         if (qolVersion != null && qolVersion >= new Version(1, 22, 2)) IsQOLExLoaded = true;
@@ -48,6 +48,15 @@ public class CustomCore : BaseUnityPlugin
         catch (Exception e)
         {
             LogError(e);
+        }
+    }
+
+    private void Update()
+    {
+        if (Input.GetKey(TextureStore.HotReloadKey1) && Input.GetKeyDown(TextureStore.HotReloadKey2) ||
+            Input.GetKeyDown(TextureStore.HotReloadKey1) && TextureStore.SingleHotReloadKey)
+        {
+            TextureStore.HotReload();
         }
     }
 
